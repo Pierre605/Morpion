@@ -1,4 +1,6 @@
 import random
+import os
+cmd_play_again = 'python3 morpion.py'
 
 grid = []
 corners= [0,2]
@@ -7,20 +9,31 @@ def make_grid():
 	for y in range(3):
 		grid.append([])
 		for x in range(3):
-			grid[y].append("|_|")
+			if x == 0:
+				grid[y].append("   ")
+			if x == 1:
+				grid[y].append("   ")
+			if x == 2:
+				grid[y].append("   ")
 	return grid
 
 def print_grid(grid):
-	print("   a  b  c")
+	print("\n")
+	print("      A   B   C\n")
 	for i, elem in enumerate(grid):
-		print(i, ('').join(elem))
+		print(str(i) + '    ' + ('|').join(elem))
+		if i < 2:
+			print("     ___|___|___")
+			print("        |   |   ")
+		else:
+			pass
 
 def letter_to_int(letter):
-	if letter == 'a':
+	if letter.lower() == 'a':
 		return 0
-	elif letter == 'b':
+	elif letter.lower() == 'b':
 		return 1
-	elif letter == 'c':
+	elif letter.lower() == 'c':
 		return 2
 
 def win_check(grid):
@@ -133,7 +146,7 @@ def defense(grid):
 		for x in range(3):
 			if y == y_row:
 				if 'X' not in grid[y][x]:
-					grid[y][x] = "|O|"
+					grid[y][x] = " O "
 					return grid
 	print("count_X_R:", count_X_R)
 	# columns defense
@@ -151,7 +164,7 @@ def defense(grid):
 		for x in range(3):
 			if y == x_col:  
 				if 'X' not in grid[x][y]:
-					grid[x][y] = "|O|"
+					grid[x][y] = " O "
 					return grid
 	print("count_X_C:", count_X_C)
 	# diag defense
@@ -170,7 +183,7 @@ def defense(grid):
 			for x in range(3):
 				if y == x:          
 					if 'X' not in grid[y][x]:
-						grid[y][x] = "|O|"
+						grid[y][x] = " O "
 						return grid
 	#diag2
 	count_diag2 = 0
@@ -187,7 +200,7 @@ def defense(grid):
 			for x in range(3):
 				if y == 3-x-1:          
 					if 'X' not in grid[y][x]:
-						grid[y][x] = "|O|"
+						grid[y][x] = " O "
 						return grid
 
 	check_def = [count_X_R, count_X_C, count_diag1, count_diag2]
@@ -204,7 +217,7 @@ def defense(grid):
 			random_Y = random.choice([0, 1, 2])
 			if 'X' not in grid[random_X][random_Y]:
 				if 'O' not in grid[random_X][random_Y]:
-					grid[random_X][random_Y] = "|O|"
+					grid[random_X][random_Y] = " O "
 					return grid
 				else:
 					print("Déja occupé")
@@ -234,7 +247,7 @@ def win_opportunity(grid):
 		for x in range(3):
 			if y == y_row:
 				if 'O' not in grid[y][x]:
-					grid[y][x] = "|O|"
+					grid[y][x] = " O "
 					return grid
 	print("count_O_R:", count_O_R)
 
@@ -253,7 +266,7 @@ def win_opportunity(grid):
 		for x in range(3):
 			if y == x_col:  
 				if 'O' not in grid[x][y]:
-					grid[x][y] = "|O|"
+					grid[x][y] = " O "
 					return grid
 	print("count_O_C:", count_O_C)
 
@@ -273,7 +286,7 @@ def win_opportunity(grid):
 			for x in range(3):
 				if y == x:          
 					if 'O' not in grid[y][x]:
-						grid[y][x] = "|O|"
+						grid[y][x] = " O "
 						return grid
 	#diag2
 	count_diag2 = 0
@@ -290,7 +303,7 @@ def win_opportunity(grid):
 			for x in range(3):
 				if y == 3-x-1:          
 					if 'O' not in grid[y][x]:
-						grid[y][x] = "|O|"
+						grid[y][x] = " O "
 						return grid
 	return "NO OP"
 
@@ -302,13 +315,13 @@ def second_move(grid):
 				if x == 0:
 					print('HG')
 					if ('X' in grid[y][x+1]) or ('X' in grid[y+1][x]) or ('X' in grid[y+1][x+2]) or ('X' in grid[y+2][x+1]) or ('X' in grid[y][x+2]) or ('X' in grid[y+2][x]):
-						grid[1][1] = "|O|"
+						grid[1][1] = " O "
 						return grid
 					elif ('X' in grid[y+1][x+1]):
-						grid[2][2] = "|O|"
+						grid[2][2] = " O "
 						return grid
 					elif ('X' in grid[y+2][x+2]):
-						grid[0][2] = "|O|"
+						grid[0][2] = " O "
 						return grid
 
 	return grid
@@ -333,13 +346,13 @@ def third_move(grid):
 	print("count_R:", count_R)
 	if count_R == 3:
 		if 'X' in grid[2][2]:
-			grid[2][0] = "|O|"
+			grid[2][0] = " O "
 			return grid
 		if 'X' in grid[2][0]:
-			grid[2][2] = "|O|"
+			grid[2][2] = " O "
 			return grid
 		if 'X' not in grid[2][2] and 'X' not in grid[2][0]:
-			grid[2][0] = "|O|"
+			grid[2][0] = " O "
 			return grid
 
 	# columns attack
@@ -355,13 +368,13 @@ def third_move(grid):
 	print("count_C:", count_C)
 	if count_C == 3:
 		if 'X' in grid[2][2]:
-			grid[0][2] = "|O|"
+			grid[0][2] = " O "
 			return grid
 		if 'X' in grid[0][2]:
-			grid[2][2] = "|O|"
+			grid[2][2] = " O "
 			return grid
 		if ('X' not in grid[2][2]) and ('X' not in grid[0][2]):
-			grid[0][2] = "|O|"
+			grid[0][2] = " O "
 			return grid
 
 	# diag attack
@@ -377,10 +390,10 @@ def third_move(grid):
 	print("count_diag1:", count_diag1)
 	if count_diag1 == 3:
 		if 'X' in grid[0][2]:
-			grid[2][0] = "|O|"
+			grid[2][0] = " O "
 			return grid
 		if 'X' in grid[2][0]:
-			grid[0][2] = "|O|"
+			grid[0][2] = " O "
 			return grid
 	#diag2
 	count_diag2 = 0
@@ -394,10 +407,10 @@ def third_move(grid):
 	print("count_diag2:", count_diag2)
 	if count_diag2 == 3:
 		if 'X' in grid[0][0]:
-			grid[2][2] = "|O|"
+			grid[2][2] = " O "
 			return grid
 		if 'X' in grid[2][2]:
-			grid[0][0] = "|O|"
+			grid[0][0] = " O "
 			return grid
 
 	return 'NO FULL'
@@ -488,12 +501,13 @@ def algo_player_hand(grid):
 
 def game_hand():
 	grid = make_grid()
-	grid[0][0] = "|O|"
+	grid[0][0] = " O "
 	print_grid(grid)
 
 	while True:
+		print('\n')
 		input_move_1 = input("Rentrez les coordonnées de votre pion, une à la fois: ")
-		if input_move_1 in ['a', 'b', 'c']:
+		if input_move_1.lower() in ['a', 'b', 'c']:
 			print(f"Colonne {input_move_1}")
 			input_move_1 = letter_to_int(input_move_1)
 			input_move = input("Selectionnez la ligne 1, 2 ou 3: ")
@@ -503,10 +517,21 @@ def game_hand():
 						if y == input_move_1 and x == int(input_move):
 							if 'X' not in grid[int(x)][y]:
 								if 'O' not in grid[int(x)][y]:
-									grid[int(x)][y] = "|X|"
+									if x == 0:
+										grid[x][y] = " X "
+									if x == 1:
+										grid[x][y] = " X "
+									if x == 2:
+										grid[x][y] = " X "
 									game = algo_player_hand(grid=grid)
 									if game == 'bye':
-										return 'THE END'
+										print('\n')
+										input_play_again = input("Une autre partie ? 'o' oui, 'n' non : ")
+										if input_play_again == 'o':
+											os.system(cmd_play_again)
+											return 'THE END'
+										else:
+											return 'THE END'
 								else:
 									print("Déja occupé")
 							else:
@@ -517,17 +542,28 @@ def game_hand():
 		elif input_move_1 in ['0', '1', '2']:
 			print(f"Ligne {input_move_1}")
 			input_move = input("Selectionnez la colonne a, b ou c: ")
-			if input_move in ['a', 'b', 'c']:
+			if input_move.lower() in ['a', 'b', 'c']:
 				input_move = letter_to_int(input_move)
 				for y in range(3):
 					for x in range(3):
 						if y == input_move and x == int(input_move_1):
 							if 'X' not in grid[int(x)][y]:
 								if 'O' not in grid[int(x)][y]:
-									grid[int(x)][y] = "|X|"
+									if x == 0:
+										grid[x][y] = " X "
+									if x == 1:
+										grid[x][y] = " X "
+									if x == 2:
+										grid[x][y] = " X "
 									game = algo_player_hand(grid=grid)
 									if game == 'bye':
-										return 'THE END'
+										print('\n')
+										input_play_again = input("Une autre partie ? 'o' oui, 'n' non : ")
+										if input_play_again == 'o':
+											os.system(cmd_play_again)
+											return 'THE END'
+										else:
+											return 'THE END'
 								else:
 									print("Déja occupé")
 							else:
