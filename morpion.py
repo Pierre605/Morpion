@@ -17,9 +17,13 @@ def hand_choice():
 
     input_hand_choice = input("Voulez vous prendre la main ? 'o' oui 'n' non : ")
     print('\n')
-    if input_hand_choice == 'o':
-        os.system(cmd_hand)
-    else:
-        os.system(cmd)
+    while True:
+        if input_hand_choice == 'o':
+            return os.system(cmd_hand)
+        elif input_hand_choice == 'n':
+            return os.system(cmd)
+        
+        print("Erreur! ('o' oui, 'n' non)")
+        input_hand_choice = input("Voulez vous prendre la main ? 'o' oui 'n' non : ")
 
 hand_choice()

@@ -1,5 +1,7 @@
 import random
 import os
+from colorist import Color, BrightColor, BgBrightColor, Effect, red, green
+
 cmd_play_again = 'python3 morpion.py'
 
 grid = []
@@ -19,12 +21,30 @@ def make_grid():
 
 def print_grid(grid):
 	print("\n")
-	print("      A   B   C\n")
-	for i, elem in enumerate(grid):
-		print(str(i) + '    ' + ('|').join(elem))
-		if i < 2:
-			print("     ___|___|___")
-			print("        |   |   ")
+	print("    A   B   C\n")
+	for x in range(3):
+		print(x, end='  ')
+		for y in range(3):
+			if y < 2:
+				if 'L' in grid[x][y]:
+					print(f"{Color.RED} O {Color.OFF}", end='|')
+				elif 'W' in grid[x][y]:
+					print(f"{BrightColor.GREEN} X {BrightColor.OFF}", end='|')
+				else:
+					print(grid[x][y], end='|')
+
+			else:
+				if 'L' in grid[x][y]:
+					print(f"{Color.RED} O {Color.OFF}", end='')
+				elif 'W' in grid[x][y]:
+					print(f"{BrightColor.GREEN} X {BrightColor.OFF}", end='')
+				else:
+					print(grid[x][y], end='')
+		
+		if x < 2:
+			print("")
+			print("   ___|___|___")
+			print("      |   |   ")
 		else:
 			pass
 
@@ -41,8 +61,10 @@ def win_check(grid):
 	count_L_R = 0
 	count_W_C = 0
 	count_L_C = 0
-	x_col = ''
-	y_col = ''
+	x_col_W = ''
+	x_col_L = ''
+	y_row_W = ''
+	y_row_L = ''
 
 	# rows check
 	for y in range(3):
@@ -54,14 +76,29 @@ def win_check(grid):
 			elif 'O' in grid[y][x]:
 				count_L_R +=1
 		if count_W_R == 3:
-			y_col = y
-			print("YOU WIN !")
-			return 'END'
+			y_row_W = y
 		elif count_L_R == 3:
-			print("YOU LOSE")
-			return 'END'
-	print("count_W_R:", count_W_R)
-	print("count_L_R:", count_L_R)
+			y_row_L = y
+			# print("y_row_L:", y_row_L)
+
+	if y_row_L or y_row_L == 0:
+		for y in range(3):
+			if y == y_row_L:
+				for x in range(3):
+					grid[y][x] = ' L '
+		print("\n PERDU :(")
+		return [grid, 'LOSE']
+
+	elif y_row_W or y_row_W == 0:
+		for y in range(3):
+			if y == y_row_W:
+				for x in range(3):
+					grid[y][x] = ' W '
+		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		return [grid, 'WIN']
+
+	# print("count_W_R:", count_W_R)
+	# print("count_L_R:", count_L_R)
 
 	# columns check
 	for y in range(3):
@@ -73,14 +110,27 @@ def win_check(grid):
 			elif 'O' in grid[x][y]:
 				count_L_C +=1
 		if count_W_C == 3:
-			x_col = y
-			print("YOU WIN !")
-			return 'END'
+			x_col_W = y
 		elif count_L_C == 3:
-			print("YOU LOSE")
-			return 'END'
-	print("count_W_C:", count_W_C)
-	print("count_L_C:", count_L_C)
+			x_col_L = y
+
+	if x_col_L or x_col_L == 0:
+		for y in range(3):
+			if y == x_col_L:
+				for x in range(3):
+					grid[x][y] = ' L '
+		print("\n PERDU :(")
+		return [grid, 'LOSE']
+
+	elif x_col_W or x_col_W == 0:
+		for y in range(3):
+			if y == x_col_W:
+				for x in range(3):
+					grid[x][y] = ' W '
+		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		return [grid, 'WIN']
+	# print("count_W_C:", count_W_C)
+	# print("count_L_C:", count_L_C)
 
 	# diags check
 	#diag1
@@ -93,14 +143,23 @@ def win_check(grid):
 					count_diag1_W +=1
 				elif 'O' in grid[y][x]:
 					count_diag1_L +=1
-	print("count_diag1_W:", count_diag1_W)
-	print("count_diag1_L:", count_diag1_L)
-	if count_diag1_W == 3:
-		print("YOU WIN !")
-		return 'END'
-	elif count_diag1_L == 3:
-		print("YOU LOSE")
-		return 'END'
+	# print("count_diag1_W:", count_diag1_W)
+	# print("count_diag1_L:", count_diag1_L)
+	if count_diag1_L == 3:
+		for y in range(3):
+			for x in range(3):
+				if y == x:
+					grid[y][x] = ' L '
+		print("\n PERDU :(")
+		return [grid, 'LOSE']
+
+	elif count_diag1_W == 3:
+		for y in range(3):
+			for x in range(3):
+				if y == x:
+					grid[y][x] = ' W '
+		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		return [grid, 'WIN']
 
 	#diag2
 	count_diag2_W = 0
@@ -112,16 +171,25 @@ def win_check(grid):
 					count_diag2_W +=1
 				elif 'O' in grid[y][x]:
 					count_diag2_L +=1
-	print("count_diag2_W:", count_diag2_W)
-	print("count_diag2_L:", count_diag2_L)
-	if count_diag2_W == 3:
-		print("YOU WIN !")
-		return 'END'
-	elif count_diag2_L == 3:
-		print("YOU LOSE")
-		return 'END'
+	# print("count_diag2_W:", count_diag2_W)
+	# print("count_diag2_L:", count_diag2_L)
+	if count_diag2_L == 3:
+		for y in range(3):
+			for x in range(3+1):
+				if y == 3-x-1:
+					grid[y][x] = ' L '
+		print("\n PERDU :(")
+		return [grid, 'LOSE']
 
-	# return ''
+	elif count_diag2_W == 3:
+		for y in range(3):
+			for x in range(3+1):
+				if y == 3-x-1:
+					grid[y][x] = ' W '
+		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		return [grid, 'WIN']
+
+	return [grid, 'continue']
 
 def defense(grid):
 
@@ -141,14 +209,14 @@ def defense(grid):
 				count_X_R -=1
 		if count_X_R == 2:
 			y_row = y
-	print("y_row:", y_row)
+	# print("y_row:", y_row)
 	for y in range(3):
 		for x in range(3):
 			if y == y_row:
 				if 'X' not in grid[y][x]:
 					grid[y][x] = " O "
 					return grid
-	print("count_X_R:", count_X_R)
+	# print("count_X_R:", count_X_R)
 	# columns defense
 	for y in range(3):
 		count_X_C = 0
@@ -159,14 +227,14 @@ def defense(grid):
 				count_X_C -=1
 		if count_X_C == 2:
 			x_col = y
-	print("x_col:", x_col)
+	# print("x_col:", x_col)
 	for y in range(3):
 		for x in range(3):
 			if y == x_col:  
 				if 'X' not in grid[x][y]:
 					grid[x][y] = " O "
 					return grid
-	print("count_X_C:", count_X_C)
+	# print("count_X_C:", count_X_C)
 	# diag defense
 	#diag1
 	count_diag1 = 0
@@ -177,7 +245,7 @@ def defense(grid):
 					count_diag1 +=1
 				elif 'O' in grid[y][x]:
 					count_diag1 -=1
-	print("count_diag1_def:", count_diag1)
+	# print("count_diag1_def:", count_diag1)
 	if count_diag1 == 2:
 		for y in range(3):
 			for x in range(3):
@@ -194,7 +262,7 @@ def defense(grid):
 					count_diag2 +=1
 				elif 'O' in grid[y][x]:
 					count_diag2 -=1
-	print("count_diag2_def:", count_diag2)
+	# print("count_diag2_def:", count_diag2)
 	if count_diag2 == 2:
 		for y in range(3):
 			for x in range(3):
@@ -208,7 +276,7 @@ def defense(grid):
 	for count in check_def:
 		if count == 2:
 			direct_danger.append(1)
-	print("direct_attck:", direct_danger)
+	# print("direct_attck:", direct_danger)
 	if len(direct_danger) == 0:
 		print("no danger case")
 		
@@ -242,14 +310,14 @@ def win_opportunity(grid):
 				count_O_R -=1
 		if count_O_R == 2:
 			y_row = y
-	print("y_row:", y_row)
+	# print("y_row:", y_row)
 	for y in range(3):
 		for x in range(3):
 			if y == y_row:
 				if 'O' not in grid[y][x]:
 					grid[y][x] = " O "
 					return grid
-	print("count_O_R:", count_O_R)
+	# print("count_O_R:", count_O_R)
 
 	# columns defense
 	for y in range(3):
@@ -261,14 +329,14 @@ def win_opportunity(grid):
 				count_O_C -=1
 		if count_O_C == 2:
 			x_col = y
-	print("x_col:", x_col)
+	# print("x_col:", x_col)
 	for y in range(3):
 		for x in range(3):
 			if y == x_col:  
 				if 'O' not in grid[x][y]:
 					grid[x][y] = " O "
 					return grid
-	print("count_O_C:", count_O_C)
+	# print("count_O_C:", count_O_C)
 
 	# diag defense
 	#diag1
@@ -280,7 +348,7 @@ def win_opportunity(grid):
 					count_diag1 +=1
 				elif 'X' in grid[y][x]:
 					count_diag1 -=1
-	print("count_diag1_O:", count_diag1)
+	# print("count_diag1_O:", count_diag1)
 	if count_diag1 == 2:
 		for y in range(3):
 			for x in range(3):
@@ -297,7 +365,7 @@ def win_opportunity(grid):
 					count_diag2 +=1
 				elif 'X' in grid[y][x]:
 					count_diag2 -=1
-	print("count_diag2_O:", count_diag2)
+	# print("count_diag2_O:", count_diag2)
 	if count_diag2 == 2:
 		for y in range(3):
 			for x in range(3):
@@ -313,15 +381,17 @@ def second_move(grid):
 		if y == 0:
 			for x in range(3):
 				if x == 0:
-					print('HG')
-					if ('X' in grid[y][x+1]) or ('X' in grid[y+1][x]) or ('X' in grid[y+1][x+2]) or ('X' in grid[y+2][x+1]) or ('X' in grid[y][x+2]) or ('X' in grid[y+2][x]):
+					if ('X' in grid[y][x+1]) or ('X' in grid[y+1][x]) or ('X' in grid[y+1][x+2]) or ('X' in grid[y+2][x+1]):
 						grid[1][1] = " O "
 						return grid
-					elif ('X' in grid[y+1][x+1]):
+					elif ('X' in grid[y+1][x+1]) or ('X' in grid[y+2][x]):
 						grid[2][2] = " O "
 						return grid
 					elif ('X' in grid[y+2][x+2]):
 						grid[0][2] = " O "
+						return grid
+					elif ('X' in grid[y][x+2]):
+						grid[2][0] = " O "
 						return grid
 
 	return grid
@@ -343,7 +413,7 @@ def third_move(grid):
 				count_R +=1
 		if count_R == 3:
 			break
-	print("count_R:", count_R)
+	# print("count_R:", count_R)
 	if count_R == 3:
 		if 'X' in grid[2][2]:
 			grid[2][0] = " O "
@@ -365,7 +435,7 @@ def third_move(grid):
 				count_C +=1
 		if count_C == 3:
 			break
-	print("count_C:", count_C)
+	# print("count_C:", count_C)
 	if count_C == 3:
 		if 'X' in grid[2][2]:
 			grid[0][2] = " O "
@@ -387,7 +457,7 @@ def third_move(grid):
 					count_diag1 +=1
 				elif 'X' in grid[y][x]:
 					count_diag1 +=1
-	print("count_diag1:", count_diag1)
+	# print("count_diag1:", count_diag1)
 	if count_diag1 == 3:
 		if 'X' in grid[0][2]:
 			grid[2][0] = " O "
@@ -404,7 +474,7 @@ def third_move(grid):
 					count_diag2 +=1
 				elif 'X' in grid[y][x]:
 					count_diag2 +=1
-	print("count_diag2:", count_diag2)
+	# print("count_diag2:", count_diag2)
 	if count_diag2 == 3:
 		if 'X' in grid[0][0]:
 			grid[2][2] = " O "
@@ -423,7 +493,7 @@ def algo_player_hand(grid):
 		for x in range(3):
 			if 'X' in grid[y][x]:
 				count_X +=1
-	print("count_X:", count_X)
+	# print("count_X:", count_X)
 
 	if count_X == 1:
 		grid  = second_move(grid)
@@ -432,9 +502,13 @@ def algo_player_hand(grid):
 
 	if count_X == 2:
 		check = win_check(grid)
-		if check == 'END':
-			print_grid(grid)
-			print("GAME END")
+		if check[1] == 'WIN':
+			print_grid(check[0])
+			print("  ✅")
+			return 'bye'
+		elif check[1] == 'LOSE':
+			print_grid(check[0])
+			print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 			return 'bye'
 		else:
 			if win_opportunity(grid) == "NO OP":
@@ -442,60 +516,103 @@ def algo_player_hand(grid):
 				if grid_2 == "NO FULL":
 					grid = defense(grid)
 					check = win_check(grid)
-					print_grid(grid)
-					if check == 'END':
-						print("GAME END")
+					if check[1] == 'WIN':
+						print_grid(check[0])
+						print("  ✅")
 						return 'bye'
+					elif check[1] == 'LOSE':
+						print_grid(check[0])
+						print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+						return 'bye'
+					else:
+						print_grid(check[0])
 				else:
 					check = win_check(grid_2)
-					print_grid(grid_2)
-					if check == 'END':
-						print("GAME END")
+					if check[1] == 'WIN':
+						print_grid(check[0])
+						print("  ✅")
 						return 'bye'
+					elif check[1] == 'LOSE':
+						print_grid(check[0])
+						print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+						return 'bye'
+					else:
+						print_grid(check[0])
 			else:
 				check = win_check(grid)
-				print_grid(grid)
-				if check == 'END':
-					print("GAME END")
+				if check[1] == 'WIN':
+						print_grid(check[0])
+						print("  ✅")
+						return 'bye'
+				elif check[1] == 'LOSE':
+					print_grid(check[0])
+					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 					return 'bye'
+				else:
+					print_grid(check[0])
 
 
 	if count_X >= 3 and count_X < 4:
 		check = win_check(grid)
-		print_grid(grid)
-		if check == 'END':
-			print("GAME END")
+		if check[1] == 'WIN':
+			print_grid(check[0])
+			print("  ✅")
+			return 'bye'
+		elif check[1] == 'LOSE':
+			print_grid(check[0])
+			print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 			return 'bye'
 		else:
 			if win_opportunity(grid) == "NO OP":
 				grid = defense(grid)
 				check = win_check(grid)
-				print_grid(grid)
-				if check == 'END':
-					print("GAME END")
+				if check[1] == 'WIN':
+						print_grid(check[0])
+						print("  ✅")
+						return 'bye'
+				elif check[1] == 'LOSE':
+					print_grid(check[0])
+					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 					return 'bye'
+				else:
+					print_grid(check[0])
 			else:
 				check = win_check(grid)
-				print_grid(grid)
-				if check == 'END':
-					print("GAME END")
+				if check[1] == 'WIN':
+						print_grid(check[0])
+						print("  ✅")
+						return 'bye'
+				elif check[1] == 'LOSE':
+					print_grid(check[0])
+					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 					return 'bye'
+				else:
+					print_grid(check[0])
 	
 	if count_X == 4:
 		check = win_check(grid)
-		print_grid(grid)
-		if check == 'END':
-			print("GAME END")
+		if check[1] == 'WIN':
+					print_grid(check[0])
+					print("  ✅")
+					return 'bye'
+		elif check[1] == 'LOSE':
+			print_grid(check[0])
+			print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 			return 'bye'
 		else:
 			grid = defense(grid)
 			check = win_check(grid)
-			print_grid(grid)
-			if check == 'END':
-				print("GAME END")
+			if check[1] == 'WIN':
+						print_grid(check[0])
+						print("  ✅")
+						return 'bye'
+			elif check[1] == 'LOSE':
+				print_grid(check[0])
+				print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 				return 'bye'
 			else:
-				print("EGALITE")
+				print_grid(check[0])
+				print("  EGALITE")
 				return 'bye'
 
 
@@ -527,11 +644,15 @@ def game_hand():
 									if game == 'bye':
 										print('\n')
 										input_play_again = input("Une autre partie ? 'o' oui, 'n' non : ")
-										if input_play_again == 'o':
-											os.system(cmd_play_again)
-											return 'THE END'
-										else:
-											return 'THE END'
+										while True:
+											if input_play_again == 'o':
+												os.system(cmd_play_again)
+												return 'THE END'
+											elif input_play_again == 'n':
+												print("\n AU REVOIR...\n")
+												return 'THE END'
+											print("Erreur ! ('o' oui, 'n' non)")
+											input_play_again = input("Une autre partie ? 'o' oui, 'n' non : ")
 								else:
 									print("Déja occupé")
 							else:
@@ -559,11 +680,15 @@ def game_hand():
 									if game == 'bye':
 										print('\n')
 										input_play_again = input("Une autre partie ? 'o' oui, 'n' non : ")
-										if input_play_again == 'o':
-											os.system(cmd_play_again)
-											return 'THE END'
-										else:
-											return 'THE END'
+										while True:
+											if input_play_again == 'o':
+												os.system(cmd_play_again)
+												return 'THE END'
+											elif input_play_again == 'n':
+												print("\n AU REVOIR...\n")
+												return 'THE END'
+											print("Erreur ! ('o' oui, 'n' non)")
+											input_play_again = input("Une autre partie ? 'o' oui, 'n' non : ")
 								else:
 									print("Déja occupé")
 							else:
