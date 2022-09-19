@@ -192,7 +192,7 @@ def win_check(grid):
 	return [grid, 'continue']
 
 def defense(grid):
-	print("\nDEFENSE!")
+	# print("\nDEFENSE!")
 	# rows defense
 	y_row = ''
 	x_col = ''

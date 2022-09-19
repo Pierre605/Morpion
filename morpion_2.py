@@ -193,7 +193,7 @@ def win_check(grid):
 
 def defense(grid):
 
-	print("\ndefense !")
+	# print("\ndefense !")
 	# rows defense
 	y_row = ''
 	x_col = ''
@@ -278,7 +278,7 @@ def defense(grid):
 			direct_danger.append(1)
 	# print("direct_attck:", direct_danger)
 	if len(direct_danger) == 0:
-		print("no danger case")
+		# print("no danger case")
 		
 		while True:
 			random_X = random.choice([0, 1, 2])
@@ -401,7 +401,7 @@ def third_move(grid):
 	x_col = ''
 	count_R = 0
 	count_C = 0
-	print("\nthird move")
+	# print("\nthird move")
 
 	# rows attack
 	for y in range(3):
