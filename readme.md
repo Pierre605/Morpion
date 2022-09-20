@@ -8,6 +8,9 @@ Challenge : coder un algorythme qui joue les coups d'un joueur adverse.
 
 >Installez le module "colorist" avec la commande `pip3 install colorist`
 
+Pour lancer le jeu, entrez la commande `python3 morpion.py`
+Vous avez les 'X', l'ordinateur joue avec les 'O'.
+
 Exemples:
 
 ![tic tac toe start](screens/morpion_screen1.png)

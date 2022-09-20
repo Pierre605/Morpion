@@ -13,8 +13,8 @@ print('''\n
                                                     \n\n''')
 
 def hand_choice():
-    cmd = 'python3 morpion_2.py'
-    cmd_hand = 'python3 morpion_1.py'
+    cmd = 'python3 .\game\morpion_2.py'
+    cmd_hand = 'python3 .\game\morpion_1.py'
 
     input_hand_choice = input("Voulez vous prendre la main ? 'o' oui 'n' non : ")
     print('\n')

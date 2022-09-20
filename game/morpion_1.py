@@ -2,7 +2,7 @@ import random
 import os
 from colorist import Color, BrightColor, BgBrightColor, Effect, red, green
 
-cmd_play_again = 'python3 morpion.py'
+cmd_play_again = 'python3 .\morpion.py'
 
 grid = []
 corners= [0,2]
@@ -47,6 +47,7 @@ def print_grid(grid):
 			print("      |   |   ")
 		else:
 			pass
+
 
 def letter_to_int(letter):
 	if letter.lower() == 'a':
@@ -96,7 +97,6 @@ def win_check(grid):
 					grid[y][x] = ' W '
 		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
 		return [grid, 'WIN']
-
 	# print("count_W_R:", count_W_R)
 	# print("count_L_R:", count_L_R)
 
@@ -192,8 +192,7 @@ def win_check(grid):
 	return [grid, 'continue']
 
 def defense(grid):
-
-	# print("\ndefense !")
+	# print("\nDEFENSE!")
 	# rows defense
 	y_row = ''
 	x_col = ''
@@ -245,7 +244,7 @@ def defense(grid):
 					count_diag1 +=1
 				elif 'O' in grid[y][x]:
 					count_diag1 -=1
-	# print("count_diag1_def:", count_diag1)
+	# print("count_diag1:", count_diag1)
 	if count_diag1 == 2:
 		for y in range(3):
 			for x in range(3):
@@ -262,7 +261,7 @@ def defense(grid):
 					count_diag2 +=1
 				elif 'O' in grid[y][x]:
 					count_diag2 -=1
-	# print("count_diag2_def:", count_diag2)
+	# print("count_diag2:", count_diag2)
 	if count_diag2 == 2:
 		for y in range(3):
 			for x in range(3):
@@ -290,11 +289,50 @@ def defense(grid):
 				else:
 					print("Déja occupé")
 			else:
-				print("Déja occupé")
-	
+				print("Déja occupé")	
 	return grid
 
+def rush_middle_if_free(grid):
+	if 'X' not in grid[1][1]:
+		grid[1][1] = " O "
+		return grid
+	else:
+		return 'X IN MID'
 
+# j'ai laissé une stratégie spéciale d'attaque non contrée, pour laisser une chance au joueur de gagner la partie\n
+# pour cela il faut commencer au centre, puis placer sa 2ème croix dans le coin opposé au pion adverse,\n
+# de manière à compléter la diagonale formée avec le pion adverse. Dans la moitié des cas vous pourrez gagner si vous \n
+# placez bien vos prochains coups
+
+def count_X_2_defend_opp_corners_strat(grid):
+	if 'O' in grid[1][1]:
+		if 'X' in grid[0][0] and 'X' in grid[2][2]:
+			grid[0][1] = " O "
+			return grid
+		elif 'X' in grid[0][2] and 'X' in grid[2][0]:
+			grid[1][0] = " O "
+			return grid
+
+		elif ('X' in grid[1][0] and 'X' in grid[0][1]):
+			grid[0][0] = " O "
+			return grid
+		elif ('X' in grid[0][1] and 'X' in grid[1][2]):
+			grid[0][2] = " O "
+			return grid
+		elif ('X' in grid[1][2] and 'X' in grid[2][1]):
+			grid[2][2] = " O "
+			return grid
+		elif ('X' in grid[2][1] and 'X' in grid[1][0]):
+			grid[2][0] = " O "
+			return grid
+			 
+		else:
+			print("no special strat")
+			return "not special"
+	else:
+		return 'O NOT IN MID'
+
+	
 def win_opportunity(grid):
 	y_row = ''
 	x_col = ''
@@ -375,119 +413,8 @@ def win_opportunity(grid):
 						return grid
 	return "NO OP"
 
-def second_move(grid):
 
-	for y in range(3):
-		if y == 0:
-			for x in range(3):
-				if x == 0:
-					if ('X' in grid[y][x+1]) or ('X' in grid[y+1][x]) or ('X' in grid[y+1][x+2]) or ('X' in grid[y+2][x+1]):
-						grid[1][1] = " O "
-						return grid
-					elif ('X' in grid[y+1][x+1]) or ('X' in grid[y+2][x]):
-						grid[2][2] = " O "
-						return grid
-					elif ('X' in grid[y+2][x+2]):
-						grid[0][2] = " O "
-						return grid
-					elif ('X' in grid[y][x+2]):
-						grid[2][0] = " O "
-						return grid
-
-	return grid
-
-def third_move(grid):
-	y_row = ''
-	x_col = ''
-	count_R = 0
-	count_C = 0
-	# print("\nthird move")
-
-	# rows attack
-	for y in range(3):
-		count_R = 0
-		for x in range(3):
-			if 'O' in grid[y][x]:
-				count_R +=1
-			elif 'X' in grid[y][x]:
-				count_R +=1
-		if count_R == 3:
-			break
-	# print("count_R:", count_R)
-	if count_R == 3:
-		if 'X' in grid[2][2]:
-			grid[2][0] = " O "
-			return grid
-		if 'X' in grid[2][0]:
-			grid[2][2] = " O "
-			return grid
-		if 'X' not in grid[2][2] and 'X' not in grid[2][0]:
-			grid[2][0] = " O "
-			return grid
-
-	# columns attack
-	for y in range(3):
-		count_C = 0
-		for x in range(3):
-			if 'O' in grid[x][y]:
-				count_C +=1
-			elif 'X' in grid[x][y]:
-				count_C +=1
-		if count_C == 3:
-			break
-	# print("count_C:", count_C)
-	if count_C == 3:
-		if 'X' in grid[2][2]:
-			grid[0][2] = " O "
-			return grid
-		if 'X' in grid[0][2]:
-			grid[2][2] = " O "
-			return grid
-		if ('X' not in grid[2][2]) and ('X' not in grid[0][2]):
-			grid[0][2] = " O "
-			return grid
-
-	# diag attack
-	#diag1
-	count_diag1 = 0
-	for y in range(3):
-		for x in range(3):
-			if y == x:
-				if 'O' in grid[y][x]:
-					count_diag1 +=1
-				elif 'X' in grid[y][x]:
-					count_diag1 +=1
-	# print("count_diag1:", count_diag1)
-	if count_diag1 == 3:
-		if 'X' in grid[0][2]:
-			grid[2][0] = " O "
-			return grid
-		if 'X' in grid[2][0]:
-			grid[0][2] = " O "
-			return grid
-	#diag2
-	count_diag2 = 0
-	for y in range(3):
-		for x in range(3+1):
-			if y == 3-x-1:
-				if 'O' in grid[y][x]:
-					count_diag2 +=1
-				elif 'X' in grid[y][x]:
-					count_diag2 +=1
-	# print("count_diag2:", count_diag2)
-	if count_diag2 == 3:
-		if 'X' in grid[0][0]:
-			grid[2][2] = " O "
-			return grid
-		if 'X' in grid[2][2]:
-			grid[0][0] = " O "
-			return grid
-
-	return 'NO FULL'
-
-
-
-def algo_player_hand(grid):
+def algo_player(grid):
 	count_X = 0
 	for y in range(3):
 		for x in range(3):
@@ -495,130 +422,87 @@ def algo_player_hand(grid):
 				count_X +=1
 	# print("count_X:", count_X)
 
+	corners= [0,2]
+
 	if count_X == 1:
-		grid  = second_move(grid)
-		print_grid(grid)
+		grid_2 = rush_middle_if_free(grid)
+		if grid_2 == 'X IN MID':
+			random_corner_X = random.choice(corners)
+			random_corner_Y = random.choice(corners)
+			grid[random_corner_X][random_corner_Y] = " O "
+			print_grid(grid)
+		else:
+			print_grid(grid_2)	
 		
-
 	if count_X == 2:
-		check = win_check(grid)
-		if check[1] == 'WIN':
-			print_grid(check[0])
-			print("  ✅")
-			return 'bye'
-		elif check[1] == 'LOSE':
-			print_grid(check[0])
-			print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
-			return 'bye'
-		else:
-			if win_opportunity(grid) == "NO OP":
-				grid_2 = third_move(grid)
-				if grid_2 == "NO FULL":
-					grid = defense(grid)
-					check = win_check(grid)
-					if check[1] == 'WIN':
-						print_grid(check[0])
-						print("  ✅")
-						return 'bye'
-					elif check[1] == 'LOSE':
-						print_grid(check[0])
-						print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
-						return 'bye'
-					else:
-						print_grid(check[0])
-				else:
-					check = win_check(grid_2)
-					if check[1] == 'WIN':
-						print_grid(check[0])
-						print("  ✅")
-						return 'bye'
-					elif check[1] == 'LOSE':
-						print_grid(check[0])
-						print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
-						return 'bye'
-					else:
-						print_grid(check[0])
-			else:
-				check = win_check(grid)
-				if check[1] == 'WIN':
-						print_grid(check[0])
-						print("  ✅")
-						return 'bye'
-				elif check[1] == 'LOSE':
-					print_grid(check[0])
-					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
-					return 'bye'
-				else:
-					print_grid(check[0])
-
-
-	if count_X >= 3 and count_X < 4:
-		check = win_check(grid)
-		if check[1] == 'WIN':
-			print_grid(check[0])
-			print("  ✅")
-			return 'bye'
-		elif check[1] == 'LOSE':
-			print_grid(check[0])
-			print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
-			return 'bye'
-		else:
+		grid_2 = count_X_2_defend_opp_corners_strat(grid)
+		if grid_2 == 'not special':
+			grid = defense(grid)
+			print_grid(grid)
+		
+		elif grid_2 == "O NOT IN MID":
 			if win_opportunity(grid) == "NO OP":
 				grid = defense(grid)
-				check = win_check(grid)
-				if check[1] == 'WIN':
-						print_grid(check[0])
-						print("  ✅")
-						return 'bye'
-				elif check[1] == 'LOSE':
-					print_grid(check[0])
-					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
-					return 'bye'
-				else:
-					print_grid(check[0])
-			else:
-				check = win_check(grid)
-				if check[1] == 'WIN':
-						print_grid(check[0])
-						print("  ✅")
-						return 'bye'
-				elif check[1] == 'LOSE':
-					print_grid(check[0])
-					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
-					return 'bye'
-				else:
-					print_grid(check[0])
-	
-	if count_X == 4:
+				print_grid(grid)
+		else:
+			print_grid(grid)
+
+
+	if count_X > 2 and count_X < 5:
 		check = win_check(grid)
 		if check[1] == 'WIN':
+			print_grid(check[0])
+			print("  ✅")
+			return 'bye'
+		elif check[1] == 'LOSE':
+			print_grid(check[0])
+			print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+			return 'bye'
+		else:
+			if win_opportunity(grid) == "NO OP":
+				# print("NO WIN OPPORTUNITY")
+				grid = defense(grid)
+				check = win_check(grid)
+				# print_grid(check[0])
+				if check[1] == 'WIN':
 					print_grid(check[0])
 					print("  ✅")
 					return 'bye'
-		elif check[1] == 'LOSE':
-			print_grid(check[0])
-			print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+				elif check[1] == 'LOSE':
+					print_grid(check[0])
+					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+					return 'bye'
+				else:
+					print_grid(check[0])
+			else:
+				check = win_check(grid)
+				# print_grid(check[0])
+				if check[1] == 'WIN':
+					print_grid(check[0])
+					print("  ✅")
+					return 'bye'
+				elif check[1] == 'LOSE':
+					print_grid(check[0])
+					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+					return 'bye'
+				else:
+					print_grid(check[0])
+
+
+	if count_X == 5:
+		check = win_check(grid)
+		print_grid(check[0])
+		if check[1] == 'END':
+			print("GAME END")
 			return 'bye'
 		else:
-			grid = defense(grid)
-			check = win_check(grid)
-			if check[1] == 'WIN':
-						print_grid(check[0])
-						print("  ✅")
-						return 'bye'
-			elif check[1] == 'LOSE':
-				print_grid(check[0])
-				print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
-				return 'bye'
-			else:
-				print_grid(check[0])
-				print("  EGALITE")
-				return 'bye'
+			print("  EGALITE")
+			return 'bye'
 
 
-def game_hand():
+def game():
+
 	grid = make_grid()
-	grid[0][0] = " O "
 	print_grid(grid)
 
 	while True:
@@ -632,15 +516,15 @@ def game_hand():
 				for y in range(3):
 					for x in range(3):
 						if y == input_move_1 and x == int(input_move):
-							if 'X' not in grid[int(x)][y]:
-								if 'O' not in grid[int(x)][y]:
+							if 'X' not in grid[x][y]:
+								if 'O' not in grid[x][y]:
 									if x == 0:
 										grid[x][y] = " X "
 									if x == 1:
 										grid[x][y] = " X "
 									if x == 2:
 										grid[x][y] = " X "
-									game = algo_player_hand(grid=grid)
+									game = algo_player(grid=grid)
 									if game == 'bye':
 										print('\n')
 										input_play_again = input("Une autre partie ? 'o' oui, 'n' non : ")
@@ -668,15 +552,15 @@ def game_hand():
 				for y in range(3):
 					for x in range(3):
 						if y == input_move and x == int(input_move_1):
-							if 'X' not in grid[int(x)][y]:
-								if 'O' not in grid[int(x)][y]:
+							if 'X' not in grid[x][y]:
+								if 'O' not in grid[x][y]:
 									if x == 0:
 										grid[x][y] = " X "
 									if x == 1:
 										grid[x][y] = " X "
 									if x == 2:
 										grid[x][y] = " X "
-									game = algo_player_hand(grid=grid)
+									game = algo_player(grid=grid)
 									if game == 'bye':
 										print('\n')
 										input_play_again = input("Une autre partie ? 'o' oui, 'n' non : ")
@@ -699,5 +583,5 @@ def game_hand():
 			print("Wrong entry !")
 
 
-game_hand()
+game()
     
