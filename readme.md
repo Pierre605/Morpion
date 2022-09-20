@@ -9,6 +9,9 @@ Challenge : coder un algorythme qui joue les coups d'un joueur adverse.
 >Installez le module "colorist" avec la commande `pip3 install colorist`
 
 Pour lancer le jeu, entrez la commande `python3 morpion.py`
+
+>**Attention :** Pour lancer les fichiers, le code comprend des commandes shell pour le powershell windows. Vous devrez modifier les quatres lignes concernées si vous êtes sous Linux
+
 Vous avez les 'X', l'ordinateur joue avec les 'O'.
 
 Exemples:
