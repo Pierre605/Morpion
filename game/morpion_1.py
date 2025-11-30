@@ -2,7 +2,7 @@ import random
 import os
 from colorist import Color, BrightColor, BgBrightColor, Effect, red, green
 
-cmd_play_again = 'python3 .\morpion.py'
+cmd_play_again = 'python3 \\morpion.py'
 
 grid = []
 corners= [0,2]
@@ -27,17 +27,17 @@ def print_grid(grid):
 		for y in range(3):
 			if y < 2:
 				if 'L' in grid[x][y]:
-					print(f"{Color.RED} O {Color.OFF}", end='|')
+					print(rf"{Color.RED} O {Color.OFF}", end='|')
 				elif 'W' in grid[x][y]:
-					print(f"{BrightColor.GREEN} X {BrightColor.OFF}", end='|')
+					print(rf"{BrightColor.GREEN} X {BrightColor.OFF}", end='|')
 				else:
 					print(grid[x][y], end='|')
 
 			else:
 				if 'L' in grid[x][y]:
-					print(f"{Color.RED} O {Color.OFF}", end='')
+					print(rf"{Color.RED} O {Color.OFF}", end='')
 				elif 'W' in grid[x][y]:
-					print(f"{BrightColor.GREEN} X {BrightColor.OFF}", end='')
+					print(rf"{BrightColor.GREEN} X {BrightColor.OFF}", end='')
 				else:
 					print(grid[x][y], end='')
 		
@@ -95,7 +95,7 @@ def win_check(grid):
 			if y == y_row_W:
 				for x in range(3):
 					grid[y][x] = ' W '
-		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		print(rf"{Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎")
 		return [grid, 'WIN']
 	# print("count_W_R:", count_W_R)
 	# print("count_L_R:", count_L_R)
@@ -127,7 +127,7 @@ def win_check(grid):
 			if y == x_col_W:
 				for x in range(3):
 					grid[x][y] = ' W '
-		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		print(rf"{Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎")
 		return [grid, 'WIN']
 	# print("count_W_C:", count_W_C)
 	# print("count_L_C:", count_L_C)
@@ -158,7 +158,7 @@ def win_check(grid):
 			for x in range(3):
 				if y == x:
 					grid[y][x] = ' W '
-		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		print(rf"{Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎")
 		return [grid, 'WIN']
 
 	#diag2
@@ -186,7 +186,7 @@ def win_check(grid):
 			for x in range(3+1):
 				if y == 3-x-1:
 					grid[y][x] = ' W '
-		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		print(rf"{Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎")
 		return [grid, 'WIN']
 
 	return [grid, 'continue']
@@ -456,7 +456,7 @@ def algo_player(grid):
 			return 'bye'
 		elif check[1] == 'LOSE':
 			print_grid(check[0])
-			print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+			print(rf"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 			return 'bye'
 		else:
 			if win_opportunity(grid) == "NO OP":
@@ -470,7 +470,7 @@ def algo_player(grid):
 					return 'bye'
 				elif check[1] == 'LOSE':
 					print_grid(check[0])
-					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+					print(rf"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 					return 'bye'
 				else:
 					print_grid(check[0])
@@ -483,7 +483,7 @@ def algo_player(grid):
 					return 'bye'
 				elif check[1] == 'LOSE':
 					print_grid(check[0])
-					print(f"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
+					print(rf"  {BgBrightColor.BLACK}❌{BgBrightColor.OFF}")
 					return 'bye'
 				else:
 					print_grid(check[0])
@@ -509,7 +509,7 @@ def game():
 		print('\n')
 		input_move_1 = input("Rentrez les coordonnées de votre pion, une à la fois: ")
 		if input_move_1.lower() in ['a', 'b', 'c']:
-			print(f"Colonne {input_move_1}")
+			print(rf"Colonne {input_move_1}")
 			input_move_1 = letter_to_int(input_move_1)
 			input_move = input("Selectionnez la ligne 1, 2 ou 3: ")
 			if input_move in ['0', '1', '2']:
@@ -545,7 +545,7 @@ def game():
 				print("Wrong Line number !")
 
 		elif input_move_1 in ['0', '1', '2']:
-			print(f"Ligne {input_move_1}")
+			print(rf"Ligne {input_move_1}")
 			input_move = input("Selectionnez la colonne a, b ou c: ")
 			if input_move.lower() in ['a', 'b', 'c']:
 				input_move = letter_to_int(input_move)

@@ -2,7 +2,7 @@ import random
 import os
 from colorist import Color, BrightColor, BgBrightColor, Effect, red, green
 
-cmd_play_again = 'python3 .\morpion.py'
+cmd_play_again = 'python3 \\morpion.py'
 
 grid = []
 corners= [0,2]
@@ -94,7 +94,7 @@ def win_check(grid):
 			if y == y_row_W:
 				for x in range(3):
 					grid[y][x] = ' W '
-		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		print(rf"{Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎")
 		return [grid, 'WIN']
 
 	# print("count_W_R:", count_W_R)
@@ -127,7 +127,7 @@ def win_check(grid):
 			if y == x_col_W:
 				for x in range(3):
 					grid[x][y] = ' W '
-		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		print(rf"{Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎")
 		return [grid, 'WIN']
 	# print("count_W_C:", count_W_C)
 	# print("count_L_C:", count_L_C)
@@ -158,7 +158,7 @@ def win_check(grid):
 			for x in range(3):
 				if y == x:
 					grid[y][x] = ' W '
-		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		print(rf"{Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎")
 		return [grid, 'WIN']
 
 	#diag2
@@ -186,7 +186,7 @@ def win_check(grid):
 			for x in range(3+1):
 				if y == 3-x-1:
 					grid[y][x] = ' W '
-		print(f"\n {Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎\n")
+		print(rf"{Effect.BLINK}{BrightColor.WHITE}GAGNE ! \o/{BrightColor.OFF}{Effect.BLINK_OFF} 😎")
 		return [grid, 'WIN']
 
 	return [grid, 'continue']

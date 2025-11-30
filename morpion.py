@@ -1,6 +1,6 @@
 import os
 
-print('''\n
+print(r'''
    ___                  _        ___  ___     ______       _       _   _ 
   |_  |                | |       |  \/  |     | ___ \     (_)     | \ | |
     | | ___ _   _    __| |_   _  | .  . | ___ | |_/ /_ __  _  ___ |  \| |
@@ -9,12 +9,12 @@ print('''\n
 \____/ \___|\__,_|  \__,_|\__,_| \_|  |_/\___/\_| \_| .__/|_|\___/\_| \_/
                                                     | |                  
                                                     |_|
-                                                                    \x1B[3mpar Pierre LUCIANI\x1B[0m
-                                                    \n\n''')
+                                                                    Pierre605
+                                                    ''')
 
 def hand_choice():
-    cmd = 'python3 .\game\morpion_2.py'
-    cmd_hand = 'python3 .\game\morpion_1.py'
+    cmd = 'python3 \\game/morpion_2.py'
+    cmd_hand = 'python3 \\game/morpion_1.py'
 
     input_hand_choice = input("Voulez vous prendre la main ? 'o' oui 'n' non : ")
     print('\n')
